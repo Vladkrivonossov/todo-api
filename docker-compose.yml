@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  go-api:
+    build: ./
+    command: ./wait-for-pg.sh db ./go-api
+    env_file:
+      - .env
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+
+  db:
+    restart: always
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  pgdata:
